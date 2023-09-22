@@ -1,71 +1,62 @@
-import React from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchAppartment } from "../../service";
 import Carousel from "../../components/Carrousel/Carousel";
 import Rating from "../../components/Rating/Rating";
 import Dropdown from "../../components/Dropdown/Dropdown";
 
 function FicheLogement() {
-  const idLogement = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [ logement, setLogement ] =  React.useState();
+  const [logement, setLogement] = useState();
 
-  React.useEffect(()=>{
-    async function getApparts(){
+  useEffect(() => {
+    const loadLogement = async () => {
       const appartments = await fetchAppartment();
-      const appartment = appartments.find(( appart ) => appart.id === idLogement.id);
-      if( !appartment ){
-        navigate( "notfound" );
-      }
-      setLogement( appartment )
-    }
-    getApparts();
-  },[ idLogement, navigate ]);
+      const appartment = appartments.find(appart => appart.id === id);
+      if (!appartment) navigate("notfound");
+      setLogement(appartment);
+    };
+    loadLogement();
+  }, [id, navigate]);
 
-  const tags = logement && logement.tags;
-  const equipments = logement && logement.equipments.map(( equip, index ) => {
-    return (
-      <ul key= { index } >
-        <li>{ equip }</li>
-      </ul>
-    )
-  })
+  if (!logement) return null;
 
-  if( logement ){
-    return (
-      <main>
-        <Carousel slides={ logement && logement.pictures }/>
-        <section className="ficheLogeInfosWrapper">
-          <div>
-            <div className="ficheLogeTitle">
-              <h1>{ logement && logement.title }</h1>
-              <h2>{ logement && logement.location }</h2>
-            </div>
-            <ul className="ficheLogeTags">
-              {
-                tags.map((tag, index) => {
-                  return (
-                    <li key={`${tag}-${index}`}>{ tag }</li>
-                  )
-                })
-              }
-            </ul>
+  const { pictures, title, location, tags, host, rating, description, equipments } = logement;
+
+  return (
+    <main>
+      <Carousel slides={pictures} />
+      <section className="ficheLogeInfosWrapper">
+        <div>
+          <div className="ficheLogeTitle">
+            <h1>{title}</h1>
+            <h2>{location}</h2>
           </div>
-          <div className="ficheLogeInfosRight">
-            <div className="ficheLogeAuthor">
-              <p>{ logement.host.name }</p>
-              <img src={ logement && logement.host.picture } alt={logement && logement.host.name } />
-            </div>
-            <Rating score={ logement && logement.rating } />
+          <ul className="ficheLogeTags">
+            {tags.map((tag, index) => (
+              <li key={`${tag}-${index}`}>{tag}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="ficheLogeInfosRight">
+          <div className="ficheLogeAuthor">
+            <p>{host.name}</p>
+            <img src={host.picture} alt={host.name} />
           </div>
-        </section>
-        <section className="ficheLogeDropdowns">
-          <Dropdown title="Description" content={logement && logement.description } />
-          <Dropdown title="Equipements" content={ equipments } />
-        </section>
-      </main>
-    )
-  }
+          <Rating score={rating} />
+        </div>
+      </section>
+      <section className="ficheLogeDropdowns">
+        <Dropdown title="Description" content={description} />
+        <Dropdown title="Equipements" content={equipments.map((equip, index) => (
+          <ul key={index}>
+            <li>{equip}</li>
+          </ul>
+        ))} />
+      </section>
+    </main>
+  );
 }
 
 export default FicheLogement;
