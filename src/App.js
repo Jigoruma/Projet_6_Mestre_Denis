@@ -1,26 +1,23 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from './components/Header/Header';
 import Footer from "./components/Footer/Footer";
-import Home from './pages/Home/Home';
-import About from './pages/About/About';
-import FicheLogement from './pages/FicheLogement/FicheLogement';
-import Error from './pages/Error/Error';
+import routes from './routes'; // Assurez-vous que le chemin est correct
 
 function App() {
   return (
     <div>
       <Router>
-      <Header />
+        <Header />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/logement/:id" element={<FicheLogement />} />
-          <Route path="*" element={<Error />} />
+          {routes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
         </Routes>
+        <Footer />
       </Router>
-      <Footer />
     </div>
   );
 }
 
 export default App;
+
