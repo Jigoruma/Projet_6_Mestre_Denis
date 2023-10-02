@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { fetchAppartment } from "../../service";
+import { fetchAppartment } from "../../services/service";
 
 function RentList() {
 

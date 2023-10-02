@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchAppartment } from "../../service";
+import { fetchAppartment } from "../../services/service";
 import Carousel from "../../components/Carrousel/Carousel";
 import Rating from "../../components/Rating/Rating";
 import Dropdown from "../../components/Dropdown/Dropdown";
